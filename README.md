@@ -4,7 +4,7 @@ Mobile and app to get information about covid-19 cases.
 
 ## Demo(Mobile)
 
-Click on the image below to watch the video:\n
+Click on the image below to watch the video:<br>
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/xyaZVdXMBeA/0.jpg)](http://www.youtube.com/watch?v=xyaZVdXMBeA "Covid-19 App")
 
 ## Screenshots(Web)
