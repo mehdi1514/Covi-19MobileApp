@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'package:covid19/widgets/drawer.dart';
 import 'package:number_display/number_display.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:bezier_chart/bezier_chart.dart';
 
 class Home extends StatelessWidget {
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+
   Future getAllData() async {
     try {
       var url = 'https://corona.lmao.ninja/all';
@@ -39,8 +42,6 @@ class Home extends StatelessWidget {
       print(e);
     }
   }
-
-
 
   Widget sample1(BuildContext context, List<Map<String, dynamic>> datesAndValues) {
     final fromDate = datesAndValues[0]['date'];
@@ -115,89 +116,92 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: DrawerWidget(),
         appBar: AppBar(
           title: Text(
             "World Wide Cases",
           ),
           centerTitle: true,
-          leading: IconButton(
-            onPressed: (){},
-            icon: Icon(Icons.menu),
-          ),
         ),
-        body: FutureBuilder(
-            future: getAllData(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting)
-                return Center(child: CircularProgressIndicator());
-              if (snapshot.hasError) {
-                return Text(
-                  "Failed loading data. Please check you wifi connection!",
-                  style: TextStyle(color: Colors.red),
+        body: RefreshIndicator(
+          key: refreshKey,
+          onRefresh: () => Navigator.pushReplacement(context,
+          PageRouteBuilder(pageBuilder: (context,a1,a2) => Home())
+          ),
+          child: FutureBuilder(
+              future: getAllData(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting)
+                  return Center(child: CircularProgressIndicator());
+                if (snapshot.hasError) {
+                  return Text(
+                    "Failed loading data. Please check you wifi connection!",
+                    style: TextStyle(color: Colors.red),
+                  );
+                }
+                Map<String, dynamic> results = json.decode(snapshot.data['all']);
+                List<Map<String, dynamic>> results2 = (snapshot.data['country']);
+                List<Map<String, dynamic>> results3 = (snapshot.data['deaths']);
+                List<Map<String, dynamic>> results4 = (snapshot.data['recovered']);
+                final updateNoDisplay = createDisplay(length: 4);
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                  child: ListView(
+                    physics: BouncingScrollPhysics(),
+                    children: <Widget>[
+                      GridView.count(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        crossAxisCount: 2,
+                        children: <Widget>[
+                          cardWidget(context, "Total Cases",
+                              results['cases'].toString()),
+                          cardWidget(
+                              context, "Deaths", results['deaths'].toString()),
+                          cardWidget(context, "Recovered",
+                              results['recovered'].toString()),
+                          cardWidget(
+                              context, "Active", results['active'].toString()),
+                          cardWidget(context, "Updated",
+                              updateNoDisplay(results['updated'])),
+                          cardWidget(context, "Affected Countries",
+                              results['affectedCountries'].toString()),
+                        ],
+                      ),
+                      SizedBox(height: 25.0,),
+                      Text(
+                        "Weekly Cases in India",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.height * 0.03,
+                        ),
+                      ),
+                      SizedBox(height: 5.0,),
+                      sample1(context, results2),
+                      SizedBox(height: 25.0,),
+                      Text(
+                        "Weekly Deaths in India",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.height * 0.03,
+                        ),
+                      ),
+                      SizedBox(height: 5.0,),
+                      sample1(context, results3),
+                      SizedBox(height: 25.0,),
+                      Text(
+                        "Weekly Recoveries in India",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.height * 0.03,
+                        ),
+                      ),
+                      SizedBox(height: 5.0,),
+                      sample1(context, results4),
+                    ],
+                  ),
                 );
-              }
-              Map<String, dynamic> results = json.decode(snapshot.data['all']);
-              List<Map<String, dynamic>> results2 = (snapshot.data['country']);
-              List<Map<String, dynamic>> results3 = (snapshot.data['deaths']);
-              List<Map<String, dynamic>> results4 = (snapshot.data['recovered']);
-              final updateNoDisplay = createDisplay(length: 4);
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                child: ListView(
-                  physics: BouncingScrollPhysics(),
-                  children: <Widget>[
-                    GridView.count(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      crossAxisCount: 2,
-                      children: <Widget>[
-                        cardWidget(context, "Total Cases",
-                            results['cases'].toString()),
-                        cardWidget(
-                            context, "Deaths", results['deaths'].toString()),
-                        cardWidget(context, "Recovered",
-                            results['recovered'].toString()),
-                        cardWidget(
-                            context, "Active", results['active'].toString()),
-                        cardWidget(context, "Updated",
-                            updateNoDisplay(results['updated'])),
-                        cardWidget(context, "Affected Countries",
-                            results['affectedCountries'].toString()),
-                      ],
-                    ),
-                    SizedBox(height: 25.0,),
-                    Text(
-                      "Weekly Cases in India",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                      ),
-                    ),
-                    SizedBox(height: 5.0,),
-                    sample1(context, results2),
-                    SizedBox(height: 25.0,),
-                    Text(
-                      "Weekly Deaths in India",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                      ),
-                    ),
-                    SizedBox(height: 5.0,),
-                    sample1(context, results3),
-                    SizedBox(height: 25.0,),
-                    Text(
-                      "Weekly Recoveries in India",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                      ),
-                    ),
-                    SizedBox(height: 5.0,),
-                    sample1(context, results4),
-                  ],
-                ),
-              );
-            }));
+              }),
+        ));
   }
 }
