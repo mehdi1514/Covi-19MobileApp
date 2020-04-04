@@ -4,7 +4,7 @@ Mobile and app to get information about covid-19 cases.
 
 ## Demo(Mobile)
 
-<iframe width="966" height="621" src="https://www.youtube.com/embed/xyaZVdXMBeA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/xyaZVdXMBeA/0.jpg)](http://www.youtube.com/watch?v=xyaZVdXMBeA "Covid-19 App")
 
 ## Screenshots(Web)
 
