@@ -7,11 +7,11 @@ To run the application clone the repo and type the following command in the proj
 ```
 flutter pub get
 ```
-Then you can run the app on simulator or a device. You can also run this on a webbrowser by executing the following command:
+Then you can run the app on simulator or a ios/android device. You can also run this on a web browser by executing the following command:
 ```
 flutter run -d chrome
 ```
-Make sure you run it on Chrome and not any other browser as it might not work.
+Make sure you run it on Chrome and not on any other browser as it might not work.
 
 ## Demo(Mobile)
 
