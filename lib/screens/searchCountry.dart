@@ -153,7 +153,57 @@ class CountrySearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return null;
+    final suggestionsList = results.where((element) => element['country']
+        .toString()
+        .toLowerCase()
+        .contains(query.toLowerCase())).toList();
+    return ListView.builder(
+      physics: BouncingScrollPhysics(),
+      itemCount: suggestionsList.length,
+      itemBuilder: (context, index) {
+        var _foldingCellKey = GlobalKey<SimpleFoldingCellState>();
+        return Container(
+          color: Color(0xFF2e282a),
+          alignment: Alignment.topCenter,
+          child: SimpleFoldingCell(
+            key: _foldingCellKey,
+            frontWidget: Builder(
+              builder: (BuildContext context) {
+                return GestureDetector(
+                  onTap: () {
+                    SimpleFoldingCellState foldingCellState =
+                    context.ancestorStateOfType(
+                        TypeMatcher<SimpleFoldingCellState>());
+                    foldingCellState?.toggleFold();
+                  },
+                  child: Container(
+                      color: Color(0xff000000),
+                      child: _buildFrontWidget(
+                          context,
+                          suggestionsList[index]['countryInfo']['flag'],
+                          suggestionsList[index]['country'],
+                          suggestionsList[index]['cases'].toString())),
+                );
+              },
+            ),
+            innerTopWidget: _buildInnerTopWidget(
+              suggestionsList[index]['country'],
+              suggestionsList[index]['todayCases'].toString(),
+              suggestionsList[index]['deaths'].toString(),
+              suggestionsList[index]['todayDeaths'].toString(),
+              suggestionsList[index]['recovered'].toString(),
+              suggestionsList[index]['critical'].toString(),
+              suggestionsList[index]['casesPerOneMillion'].toString(),
+            ),
+            innerBottomWidget: _buildInnerBottomWidget(suggestionsList[index]['cases'].toString()),
+            cellSize: Size(MediaQuery.of(context).size.width, 125),
+            padding: EdgeInsets.all(15),
+            animationDuration: Duration(milliseconds: 300),
+            borderRadius: 10,
+          ),
+        );
+      },
+    );
   }
 
   @override

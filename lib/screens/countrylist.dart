@@ -8,7 +8,7 @@ import 'package:folding_cell/folding_cell.dart';
 class CountryList extends StatelessWidget {
   Future getAllCountriesData() async {
     try {
-      var url = 'https://corona.lmao.ninja/countries?sort=country';
+      var url = 'https://corona.lmao.ninja/v2/countries?sort=country';
       var response = await http.get(url);
       return response.body;
     } catch (e) {

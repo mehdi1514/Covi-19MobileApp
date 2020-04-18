@@ -10,7 +10,7 @@ class Home extends StatelessWidget {
 
   Future getAllData() async {
     try {
-      var url = 'https://corona.lmao.ninja/all';
+      var url = 'https://corona.lmao.ninja/v2/all';
       var response = await http.get(url);
       var url2 = 'https://corona.lmao.ninja/v2/historical/India';
       var response2 = await http.get(url2);
