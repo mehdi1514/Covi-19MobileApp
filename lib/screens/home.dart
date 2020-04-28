@@ -134,9 +134,13 @@ class Home extends StatelessWidget {
                 if (snapshot.connectionState == ConnectionState.waiting)
                   return Center(child: CircularProgressIndicator());
                 if (snapshot.hasError) {
-                  return Text(
-                    "Failed loading data. Please check you wifi connection!",
-                    style: TextStyle(color: Colors.red),
+                  return Container(
+                    child: Center(
+                      child: Text(
+                        "Failed loading data. Please check you wifi connection!",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
                   );
                 }
                 Map<String, dynamic> results = json.decode(snapshot.data['all']);
